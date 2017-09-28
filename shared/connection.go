@@ -55,6 +55,7 @@ type MongoSessionOpts struct {
 }
 
 func MongoSession(opts MongoSessionOpts) *mgo.Session {
+	tlsConfig := &tls.Config{}
 	dialInfo, err := mgo.ParseURL(opts.URI)
 	if err != nil {
 		log.Errorf("Cannot parse mongodb server url: %s", err)
@@ -70,6 +71,11 @@ func MongoSession(opts MongoSessionOpts) *mgo.Session {
 		return nil
 	}
 
+	dialInfo.DialServer = func(addr *mgo.ServerAddr) (net.Conn, error) {
+		var conn *tls.Conn
+		conn, err = tls.Dial("tcp", addr.String(), tlsConfig)
+		return conn, err
+	}
 	session, err := mgo.DialWithInfo(dialInfo)
 	if err != nil {
 		log.Errorf("Cannot connect to server using url %s: %s", RedactMongoUri(opts.URI), err)
