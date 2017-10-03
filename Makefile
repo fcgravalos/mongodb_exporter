@@ -55,7 +55,7 @@ tarball: init
 
 docker:
 	@echo ">> building docker image"
-	@docker build -t "$(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_TAG)" .
+	@docker build -t "fcgravalos/$(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_TAG)" .
 
 init:
 	$(GO) get -u github.com/AlekSi/gocoverutil

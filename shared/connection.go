@@ -56,13 +56,14 @@ type MongoSessionOpts struct {
 
 func MongoSession(opts MongoSessionOpts) *mgo.Session {
 	tlsConfig := &tls.Config{}
+	tlsConfig.InsecureSkipVerify = false
 	dialInfo, err := mgo.ParseURL(opts.URI)
 	if err != nil {
 		log.Errorf("Cannot parse mongodb server url: %s", err)
 		return nil
 	}
 
-	dialInfo.Direct = true // Force direct connection
+	//dialInfo.Direct = true // Force direct connection
 	dialInfo.Timeout = dialMongodbTimeout
 
 	err = opts.configureDialInfoIfRequired(dialInfo)
